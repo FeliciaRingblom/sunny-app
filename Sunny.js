@@ -18,7 +18,16 @@ var Sunny = React.createClass({
     });
   },
   componentDidMount() {
-    this._getForecastForCity('Stockholm');
+    this._getInitialForecast();
+  },
+  _getInitialForecast() {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this._getForecastForCoords(position.coords.latitude, position.coords.longitude);
+      },
+      (error) => {alert(error.message)},
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+    );
   },
   _handleTextChange(event) {
     var city = event.nativeEvent.text;
@@ -27,6 +36,10 @@ var Sunny = React.createClass({
   _getForecastForCity(city) {
     this._getForecast(
       `${API_STEM}q=${city}&units=metric&APPID=${API_KEY}`);
+  },
+  _getForecastForCoords: function(lat, lon) {
+    this._getForecast(
+      `${API_STEM}lat=${lat}&lon=${lon}&units=metric&APPID=${API_KEY}`);
   },
   _getForecast(url){
     fetch(url)
