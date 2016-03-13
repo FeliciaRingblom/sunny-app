@@ -8,24 +8,28 @@ import React, {
 
 import Forecast from './Forecast';
 
+const API_STEM = 'http://api.openweathermap.org/data/2.5/weather?';
+const API_KEY = '3696bdcc673594db06c301efa401f5e0';
+
 var Sunny = React.createClass({
   getInitialState() {
     return ({
-      city: '',
       forecast: null
     });
   },
   componentDidMount() {
-    this._getForecast('Stockholm');
+    this._getForecastForCity('Stockholm');
   },
   _handleTextChange(event) {
     var city = event.nativeEvent.text;
-    this.setState({city: city});
-    this._getForecast(city);
+    this._getForecastForCity(city);
   },
-  _getForecast(city){
-    fetch('http://api.openweathermap.org/data/2.5/weather?q='
-      + city + ',sv&units=metric&appid=3696bdcc673594db06c301efa401f5e0')
+  _getForecastForCity(city) {
+    this._getForecast(
+      `${API_STEM}q=${city}&units=metric&APPID=${API_KEY}`);
+  },
+  _getForecast(url){
+    fetch(url)
       .then((response) => response.json())
       .then((responseJSON) => {
         this.setState({
