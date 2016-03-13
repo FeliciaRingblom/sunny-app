@@ -3,7 +3,8 @@ import React, {
   StyleSheet,
   Text,
   View,
-  TextInput
+  TextInput,
+  Image
 } from 'react-native';
 
 import Forecast from './Forecast';
@@ -67,20 +68,23 @@ var Sunny = React.createClass({
     }
     return (
       <View style={styles.container}>
-         <View style={styles.overlay}>
-            <View style={styles.row}>
-              <Text style={styles.mainText}>
-                Show weather for
-              </Text>
-              <View style={styles.cityContainer}>
-                <TextInput
-                  style={[styles.city, styles.mainText]}
-                  onSubmitEditing={this._handleTextChange}
-                  maxLength={50}/>
+        <Image source={require('image!flowers')}
+             resizeMode='cover'>
+           <View style={styles.overlay}>
+              <View style={styles.row}>
+                <Text style={styles.mainText}>
+                  Show weather for
+                </Text>
+                <View style={styles.cityContainer}>
+                  <TextInput
+                    style={[styles.city, styles.mainText]}
+                    onSubmitEditing={this._handleTextChange}
+                    maxLength={50}/>
+                </View>
               </View>
-            </View>
-            {content}
+              {content}
           </View>
+        </Image>
       </View>
     );
   }
@@ -93,7 +97,10 @@ var styles = StyleSheet.create({
   },
   overlay: {
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    padding: 20,
+    opacity: 0.5
   },
   row: {
     flex: 1,
