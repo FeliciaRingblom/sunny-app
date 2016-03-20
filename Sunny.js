@@ -8,6 +8,8 @@ import React, {
 } from 'react-native';
 
 import Forecast from './Forecast';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 const API_STEM = 'http://api.openweathermap.org/data/2.5/weather?';
 const API_KEY = '3696bdcc673594db06c301efa401f5e0';
@@ -83,6 +85,7 @@ var Sunny = React.createClass({
                 </View>
               </View>
               {content}
+              <Icon name="heart" style={styles.heartIcon} />
           </View>
         </Image>
       </View>
@@ -98,9 +101,8 @@ var styles = StyleSheet.create({
   overlay: {
     flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    padding: 20,
-    opacity: 0.5
+    backgroundColor: 'rgba(255,255,255,0)',
+    padding: 20
   },
   row: {
     flex: 1,
@@ -110,16 +112,22 @@ var styles = StyleSheet.create({
   },
   cityContainer: {
     flex: 2,
-    borderBottomColor: '#000000',
+    borderBottomColor: '#FFFFFF',
     borderBottomWidth: 1
   },
   city: {
     width: 100,
     height: 16,
+    color: '#FFFFFF'
   },
   mainText: {
     flex: 1,
-    fontSize: 16
+    fontSize: 16,
+    color: '#FFFFFF'
+  },
+  heartIcon: {
+    color: '#FFFFFF',
+    fontSize: 30
   }
 });
 

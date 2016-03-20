@@ -8,11 +8,13 @@ var styles = StyleSheet.create({
   },
   bigText: {
     flex: 2,
-    fontSize: 30
+    fontSize: 30,
+    color: '#FFFFFF'
   },
   mainText: {
     flex: 1,
-    fontSize: 16
+    fontSize: 16,
+    color: '#FFFFFF'
   }
 });
 
