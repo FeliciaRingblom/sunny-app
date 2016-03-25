@@ -6,7 +6,8 @@ import React, {
   TextInput,
   Image,
   AsyncStorage,
-  TouchableHighlight
+  TouchableHighlight,
+  StatusBarIOS
 } from 'react-native';
 
 import Forecast from './Forecast';
@@ -35,6 +36,8 @@ var Sunny = React.createClass({
       })
       .catch((error) => console.log('AsyncStorage error: ' + error.message))
       .done();
+
+      StatusBarIOS.setStyle(1, true);
   },
   _getInitialForecast() {
     navigator.geolocation.getCurrentPosition(
@@ -111,7 +114,11 @@ var Sunny = React.createClass({
                 {position}
               </Text>
               {content}
-              <TouchableHighlight tyle={styles.touchIcon} onPress={this._storeCity}>
+              <TouchableHighlight
+                style={styles.touchIcon}
+                onPress={this._storeCity}
+                underlayColor='rgba(255,255,255,0.3)'
+                activeOpacity={0.5}>
                   <Icon name="heart" style={styles.heartIcon} />
               </TouchableHighlight>
           </View>
@@ -160,11 +167,11 @@ var styles = StyleSheet.create({
   },
   heartIcon: {
     color: '#FFFFFF',
-    fontSize: 30
+    fontSize: 30,
+    margin: 10
   },
   touchIcon: {
-    backgroundColor: '#FF0000',
-    borderRadius: 20,
+    borderRadius: 25,
     width: 50,
     height: 50
   }
