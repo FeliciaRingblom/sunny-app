@@ -4,7 +4,9 @@ import React, {
   Text,
   View,
   TextInput,
-  Image
+  Image,
+  AsyncStorage,
+  TouchableHighlight
 } from 'react-native';
 
 import Forecast from './Forecast';
@@ -13,15 +15,26 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 const API_STEM = 'http://api.openweathermap.org/data/2.5/weather?';
 const API_KEY = '3696bdcc673594db06c301efa401f5e0';
+const STORAGE_KEY = '@SunnyApp:city';
 
 var Sunny = React.createClass({
   getInitialState() {
     return ({
-      forecast: null
+      forecast: null,
+      city: null
     });
   },
   componentDidMount() {
-    this._getInitialForecast();
+    AsyncStorage.getItem(STORAGE_KEY)
+      .then((value) => {
+        if (value !== null) {
+          this._getForecastForCity(value);
+        }else{
+          this._getInitialForecast();
+        }
+      })
+      .catch((error) => console.log('AsyncStorage error: ' + error.message))
+      .done();
   },
   _getInitialForecast() {
     navigator.geolocation.getCurrentPosition(
@@ -32,17 +45,23 @@ var Sunny = React.createClass({
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
     );
   },
+  _storeCity(){
+    let city = this.state.city;
+    AsyncStorage.setItem(STORAGE_KEY, city)
+      .then(() => console.log('Saved selection to disk: ' + city))
+      .catch((error) => console.log('AsyncStorage error: ' + error.message))
+      .done();
+  },
   _handleTextChange(event) {
     var city = event.nativeEvent.text;
     this._getForecastForCity(city);
   },
   _getForecastForCity(city) {
-    this._getForecast(
-      `${API_STEM}q=${city}&units=metric&APPID=${API_KEY}`);
+    this.setState({city: city})
+    this._getForecast(`${API_STEM}q=${city}&units=metric&APPID=${API_KEY}`);
   },
-  _getForecastForCoords: function(lat, lon) {
-    this._getForecast(
-      `${API_STEM}lat=${lat}&lon=${lon}&units=metric&APPID=${API_KEY}`);
+  _getForecastForCoords(lat, lon) {
+    this._getForecast(`${API_STEM}lat=${lat}&lon=${lon}&units=metric&APPID=${API_KEY}`);
   },
   _getForecast(url){
     fetch(url)
@@ -68,6 +87,10 @@ var Sunny = React.createClass({
                   description={this.state.forecast.description}
                   temp={this.state.forecast.temp}/>;
     }
+    var position = "Current position";
+    if (this.state.city !== null){
+      position = this.state.city
+    }
     return (
       <View style={styles.container}>
         <Image source={require('image!flowers')}
@@ -84,8 +107,13 @@ var Sunny = React.createClass({
                     maxLength={50}/>
                 </View>
               </View>
+              <Text style={styles.posText}>
+                {position}
+              </Text>
               {content}
-              <Icon name="heart" style={styles.heartIcon} />
+              <TouchableHighlight tyle={styles.touchIcon} onPress={this._storeCity}>
+                  <Icon name="heart" style={styles.heartIcon} />
+              </TouchableHighlight>
           </View>
         </Image>
       </View>
@@ -125,9 +153,20 @@ var styles = StyleSheet.create({
     fontSize: 16,
     color: '#FFFFFF'
   },
+  posText: {
+    flex: 1,
+    fontSize: 40,
+    color: '#FFFFFF'
+  },
   heartIcon: {
     color: '#FFFFFF',
     fontSize: 30
+  },
+  touchIcon: {
+    backgroundColor: '#FF0000',
+    borderRadius: 20,
+    width: 50,
+    height: 50
   }
 });
 
